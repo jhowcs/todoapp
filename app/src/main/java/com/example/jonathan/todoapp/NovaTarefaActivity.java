@@ -30,12 +30,19 @@ public class NovaTarefaActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnIncluir) {
+            String nomeTarefa = edtNomeTarefa.getText().toString();
+            salvarNoBancoDeDados(nomeTarefa);
             Intent intent = new Intent();
-            intent.putExtra(CHAVE_NOVA_TAREFA,
-                    edtNomeTarefa.getText().toString());
+            intent.putExtra(CHAVE_NOVA_TAREFA, nomeTarefa);
 
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
+    }
+
+    private void salvarNoBancoDeDados(String nomeTarefa) {
+        AppDatabase.getAppDatabase(this)
+                .tarefaDao()
+                .insert(new TarefaModelo(nomeTarefa, false));
     }
 }

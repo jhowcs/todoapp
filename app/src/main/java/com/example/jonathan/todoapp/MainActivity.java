@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,10 +43,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inicializaLista() {
-        List<TarefaModelo> lista = new ArrayList<>();
-        lista.add(new TarefaModelo("Tarefa 1", false));
-        lista.add(new TarefaModelo("Tarefa 2", true));
-        lista.add(new TarefaModelo("Tarefa 3", false));
+        List<TarefaModelo> lista = AppDatabase.getAppDatabase(this).tarefaDao().getAll();
 
         adapter = new TarefaAdapter(lista);
         LinearLayoutManager llm = new LinearLayoutManager(this,
