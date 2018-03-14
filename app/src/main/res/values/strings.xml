@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Todo App</string>
+    <string name="nome_tarefa">nome da tarefa</string>
+    <string name="incluir_tarefa">incluir tarefa</string>
+</resources>
