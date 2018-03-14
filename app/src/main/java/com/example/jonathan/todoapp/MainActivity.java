@@ -59,10 +59,10 @@ public class MainActivity extends AppCompatActivity {
                                     Intent data) {
         if (resultCode == RESULT_OK && requestCode == RC_NOVA_TAREFA) {
             if (data != null) {
-                String novaTarefa =
-                        data.getStringExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
-
-                Toast.makeText(this, novaTarefa, Toast.LENGTH_SHORT).show();
+                long idGerado =
+                        data.getLongExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA, 0);
+                TarefaModelo tarefaModelo = AppDatabase.getAppDatabase(this).tarefaDao().getById(idGerado);
+                adapter.addTarefa(tarefaModelo);
             }
         }
     }

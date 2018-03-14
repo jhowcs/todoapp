@@ -31,17 +31,17 @@ public class NovaTarefaActivity extends AppCompatActivity
     public void onClick(View view) {
         if (view.getId() == R.id.btnIncluir) {
             String nomeTarefa = edtNomeTarefa.getText().toString();
-            salvarNoBancoDeDados(nomeTarefa);
+            long idGerado = salvarNoBancoDeDados(nomeTarefa);
             Intent intent = new Intent();
-            intent.putExtra(CHAVE_NOVA_TAREFA, nomeTarefa);
+            intent.putExtra(CHAVE_NOVA_TAREFA, idGerado);
 
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
     }
 
-    private void salvarNoBancoDeDados(String nomeTarefa) {
-        AppDatabase.getAppDatabase(this)
+    private long salvarNoBancoDeDados(String nomeTarefa) {
+        return AppDatabase.getAppDatabase(this)
                 .tarefaDao()
                 .insert(new TarefaModelo(nomeTarefa, false));
     }

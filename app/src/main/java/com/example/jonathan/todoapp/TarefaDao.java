@@ -13,8 +13,11 @@ public interface TarefaDao {
     @Query("SELECT * FROM task")
     List<TarefaModelo> getAll();
 
+    @Query("SELECT * FROM task where uid = :uid")
+    TarefaModelo getById(long uid);
+
     @Insert
-    void insert(TarefaModelo tarefaModelo);
+    long insert(TarefaModelo tarefaModelo);
 
     @Delete
     void delete(TarefaModelo tarefaModelo);

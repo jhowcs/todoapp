@@ -22,6 +22,10 @@ public class TarefaAdapter
         this.lista = lista;
     }
 
+    public void addTarefa(TarefaModelo tarefaModelo) {
+        this.lista.add(tarefaModelo);
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
