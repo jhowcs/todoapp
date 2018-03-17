@@ -13,6 +13,8 @@ import com.example.jonathan.todoapp.data.AppDatabase;
 import com.example.jonathan.todoapp.data.DatabaseConcrete;
 import com.example.jonathan.todoapp.data.TarefaDao;
 
+import java.util.List;
+
 public class NovaTarefaActivity extends AppCompatActivity
         implements View.OnClickListener {
 
@@ -36,24 +38,28 @@ public class NovaTarefaActivity extends AppCompatActivity
         if (view.getId() == R.id.btnIncluir) {
             String nomeTarefa = edtNomeTarefa.getText().toString();
 
-            salvarNoBancoLocal(nomeTarefa);
+            TarefaModelo tarefa = salvarNoBancoLocal(nomeTarefa);
 
             Intent intent = new Intent();
             intent.putExtra(CHAVE_NOVA_TAREFA,
-                    nomeTarefa);
+                    tarefa);
 
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
     }
 
-    private void salvarNoBancoLocal(String nomeTarefa) {
+    private TarefaModelo salvarNoBancoLocal(String nomeTarefa) {
         TarefaModelo tarefa = new TarefaModelo(nomeTarefa, false);
 
         AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
 
         TarefaDao tarefaDao = database.getTarefaDao();
 
-        tarefaDao.insertAll(tarefa);
+        List<Long> ids = tarefaDao.insertAll(tarefa);
+
+        tarefa.setUid(ids.get(0));
+
+        return tarefa;
     }
 }

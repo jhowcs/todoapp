@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.example.jonathan.todoapp.data.DatabaseConcrete;
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -44,10 +44,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inicializaLista() {
-        List<TarefaModelo> lista = new ArrayList<>();
-        lista.add(new TarefaModelo("Tarefa 1", false));
-        lista.add(new TarefaModelo("Tarefa 2", true));
-        lista.add(new TarefaModelo("Tarefa 3", false));
+        List<TarefaModelo> lista = DatabaseConcrete.getInstance(this.getApplicationContext())
+                .getTarefaDao().getAll();
 
         adapter = new TarefaAdapter(lista);
         LinearLayoutManager llm = new LinearLayoutManager(this,
@@ -63,10 +61,10 @@ public class MainActivity extends AppCompatActivity {
                                     Intent data) {
         if (resultCode == RESULT_OK && requestCode == RC_NOVA_TAREFA) {
             if (data != null) {
-                String novaTarefa =
-                        data.getStringExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
+                TarefaModelo tarefaModelo =
+                        data.getParcelableExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
 
-                Toast.makeText(this, novaTarefa, Toast.LENGTH_SHORT).show();
+                adapter.adicionarNovaTarefa(tarefaModelo);
             }
         }
     }
