@@ -9,6 +9,9 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.jonathan.todoapp.view.MainActivity;
+import com.example.jonathan.todoapp.view.NovaTarefaActivity;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
