@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.view;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.concurrent.Executor;
+import com.example.jonathan.todoapp.AppExecutors;
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.data.local.LocalDataSource;
+import com.example.jonathan.todoapp.data.TarefaModelo;
+import com.example.jonathan.todoapp.data.TarefaRepository;
 
 public class NovaTarefaActivity extends AppCompatActivity
         implements View.OnClickListener, InserirTarefaCallback {

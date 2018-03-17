@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.view;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,10 +8,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.example.jonathan.todoapp.AppExecutors;
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.TarefaAdapter;
+import com.example.jonathan.todoapp.data.TarefaModelo;
+import com.example.jonathan.todoapp.data.TarefaRepository;
+import com.example.jonathan.todoapp.data.local.LocalDataSource;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements TarefaCallback {
+public class MainActivity extends AppCompatActivity
+        implements TarefaCallback, TarefaAdapter.TodoListener {
 
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
@@ -68,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements TarefaCallback {
     @Override
     public void onLoadListaDeTarefas(List<TarefaModelo> tarefaModelo) {
         lista = tarefaModelo;
-        adapter = new TarefaAdapter(lista);
+        adapter = new TarefaAdapter(lista, this);
         LinearLayoutManager llm = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         rvListaTarefa.setLayoutManager(llm);
@@ -82,4 +90,8 @@ public class MainActivity extends AppCompatActivity implements TarefaCallback {
     }
 
 
+    @Override
+    public void aoSelecionarTarefa(TarefaModelo tarefa) {
+        repository.atualizarTarefa(tarefa);
+    }
 }

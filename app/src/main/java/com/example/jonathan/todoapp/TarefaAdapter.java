@@ -10,20 +10,28 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.example.jonathan.todoapp.data.TarefaModelo;
+
 import java.util.List;
 
 public class TarefaAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
-    private List<TarefaModelo> lista = new ArrayList<>();
+    private List<TarefaModelo> lista;
+    private TodoListener listener;
 
-    public TarefaAdapter(List<TarefaModelo> lista) {
+    public TarefaAdapter(List<TarefaModelo> lista, TodoListener listener) {
         this.lista = lista;
+        this.listener = listener;
+    }
+
+    public interface TodoListener {
+        void aoSelecionarTarefa(final TarefaModelo tarefa);
     }
 
     public void addTarefa(TarefaModelo tarefaModelo) {
         this.lista.add(tarefaModelo);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -39,14 +47,16 @@ public class TarefaAdapter
         TarefaModelo tarefaModelo = lista.get(position);
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
-        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao);
+        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao, position);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
     }
 
-    private void addChangeListenerForCheckBox(final CheckBox chkExecutado, final TextView txtDescricao) {
+    private void addChangeListenerForCheckBox(final CheckBox chkExecutado,
+                                              final TextView txtDescricao,
+                                              final int posicao) {
         chkExecutado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -54,9 +64,19 @@ public class TarefaAdapter
                         ? txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                         : Paint.LINEAR_TEXT_FLAG;
 
-                    txtDescricao.setPaintFlags(paintFlags);
+                txtDescricao.setPaintFlags(paintFlags);
+
+                TarefaModelo tarefa = atualizarTarefa(isChecked, posicao);
+                listener.aoSelecionarTarefa(tarefa);
             }
         });
+    }
+
+    @NonNull
+    private TarefaModelo atualizarTarefa(boolean isChecked, int posicao) {
+        TarefaModelo tarefa = lista.get(posicao);
+        tarefa.setExecutado(isChecked);
+        return tarefa;
     }
 
     @Override
