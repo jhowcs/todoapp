@@ -8,9 +8,16 @@ import java.util.List;
 
 public interface TarefaCallback {
 
-    @MainThread
-    void onLoadListaDeTarefas(List<TarefaModelo> tarefaModelo);
+    interface onLoad {
+        @MainThread
+        void onLoadListaDeTarefas(List<TarefaModelo> tarefaModelo);
 
-    @MainThread
-    void onLoadTarefa(TarefaModelo tarefaModelo);
+        @MainThread
+        void onLoadTarefa(TarefaModelo tarefaModelo);
+    }
+
+    interface onInsert {
+        @MainThread
+        void onInserirTarefa(long id);
+    }
 }

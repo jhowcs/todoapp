@@ -16,7 +16,7 @@ import com.example.jonathan.todoapp.data.TarefaModelo;
 import com.example.jonathan.todoapp.data.TarefaRepository;
 
 public class NovaTarefaActivity extends AppCompatActivity
-        implements View.OnClickListener, InserirTarefaCallback {
+        implements View.OnClickListener, TarefaCallback.onInsert {
 
     public static final String CHAVE_NOVA_TAREFA = "chave";
 

@@ -1,7 +1,6 @@
 package com.example.jonathan.todoapp.data;
 
 import com.example.jonathan.todoapp.AppExecutors;
-import com.example.jonathan.todoapp.view.InserirTarefaCallback;
 import com.example.jonathan.todoapp.view.TarefaCallback;
 
 import java.util.List;
@@ -17,7 +16,7 @@ public class TarefaRepository {
         this.taskDataSource = taskDataSource;
     }
 
-    public void getTarefa(final TarefaCallback callback) {
+    public void getTarefa(final TarefaCallback.onLoad callback) {
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -32,7 +31,7 @@ public class TarefaRepository {
         });
     }
 
-    public void getTarefaPorId(final TarefaCallback callback, final long id) {
+    public void getTarefaPorId(final TarefaCallback.onLoad callback, final long id) {
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {
@@ -48,7 +47,7 @@ public class TarefaRepository {
         });
     }
 
-    public void inserirTarefa(final InserirTarefaCallback callback, final TarefaModelo tarefa) {
+    public void inserirTarefa(final TarefaCallback.onInsert callback, final TarefaModelo tarefa) {
         appExecutors.diskIO().execute(new Runnable() {
             @Override
             public void run() {

@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements TarefaCallback, TarefaAdapter.TodoListener {
+        implements TarefaCallback.onLoad, TarefaAdapter.TodoListener {
 
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
