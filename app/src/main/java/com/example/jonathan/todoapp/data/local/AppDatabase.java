@@ -1,9 +1,11 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.data.local;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
+
+import com.example.jonathan.todoapp.data.TarefaModelo;
 
 @Database(entities = {TarefaModelo.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
@@ -17,7 +19,7 @@ public abstract class AppDatabase extends RoomDatabase {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                     AppDatabase.class,
                     "task-database")
-                    .allowMainThreadQueries()
+                    //.allowMainThreadQueries()
                     .build();
         }
 

@@ -7,11 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TarefaCallback {
 
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
@@ -19,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
     private TarefaAdapter adapter;
 
     private static final int RC_NOVA_TAREFA = 10;
+    private List<TarefaModelo> lista;
+    private TarefaRepository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,18 +41,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        repository = new TarefaRepository(new AppExecutors(), LocalDataSource.getInstance(this));
+
         inicializaLista();
     }
 
     private void inicializaLista() {
-        List<TarefaModelo> lista = AppDatabase.getAppDatabase(this).tarefaDao().getAll();
-
-        adapter = new TarefaAdapter(lista);
-        LinearLayoutManager llm = new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false);
-        rvListaTarefa.setLayoutManager(llm);
-        rvListaTarefa.setAdapter(adapter);
-
+        lista = new ArrayList<>();
+        repository.getTarefa(this);
     }
 
     @Override
@@ -61,9 +59,27 @@ public class MainActivity extends AppCompatActivity {
             if (data != null) {
                 long idGerado =
                         data.getLongExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA, 0);
-                TarefaModelo tarefaModelo = AppDatabase.getAppDatabase(this).tarefaDao().getById(idGerado);
-                adapter.addTarefa(tarefaModelo);
+                repository.getTarefaPorId(this, idGerado);
+
             }
         }
     }
+
+    @Override
+    public void onLoadListaDeTarefas(List<TarefaModelo> tarefaModelo) {
+        lista = tarefaModelo;
+        adapter = new TarefaAdapter(lista);
+        LinearLayoutManager llm = new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false);
+        rvListaTarefa.setLayoutManager(llm);
+        rvListaTarefa.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onLoadTarefa(TarefaModelo tarefaModelo) {
+        adapter.addTarefa(tarefaModelo);
+    }
+
+
 }

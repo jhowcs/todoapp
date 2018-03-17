@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.data;
 
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;

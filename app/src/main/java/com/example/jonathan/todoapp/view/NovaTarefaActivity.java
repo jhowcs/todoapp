@@ -9,13 +9,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.concurrent.Executor;
+
 public class NovaTarefaActivity extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, InserirTarefaCallback {
 
     public static final String CHAVE_NOVA_TAREFA = "chave";
 
     private EditText edtNomeTarefa;
     private Button btnIncluir;
+
+    private TarefaRepository repository;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -25,24 +29,24 @@ public class NovaTarefaActivity extends AppCompatActivity
         edtNomeTarefa = findViewById(R.id.edtNomeTarefa);
         btnIncluir = findViewById(R.id.btnIncluir);
         btnIncluir.setOnClickListener(this);
+
+        repository = new TarefaRepository(new AppExecutors(), LocalDataSource.getInstance(this));
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnIncluir) {
             String nomeTarefa = edtNomeTarefa.getText().toString();
-            long idGerado = salvarNoBancoDeDados(nomeTarefa);
-            Intent intent = new Intent();
-            intent.putExtra(CHAVE_NOVA_TAREFA, idGerado);
-
-            setResult(Activity.RESULT_OK, intent);
-            finish();
+            repository.inserirTarefa(this, new TarefaModelo(nomeTarefa, false));
         }
     }
 
-    private long salvarNoBancoDeDados(String nomeTarefa) {
-        return AppDatabase.getAppDatabase(this)
-                .tarefaDao()
-                .insert(new TarefaModelo(nomeTarefa, false));
+    @Override
+    public void onInserirTarefa(long idGerado) {
+        Intent intent = new Intent();
+        intent.putExtra(CHAVE_NOVA_TAREFA, idGerado);
+
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 }
