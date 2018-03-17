@@ -9,6 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.jonathan.todoapp.data.AppDatabase;
+import com.example.jonathan.todoapp.data.DatabaseConcrete;
+import com.example.jonathan.todoapp.data.TarefaDao;
+
 public class NovaTarefaActivity extends AppCompatActivity
         implements View.OnClickListener {
 
@@ -30,12 +34,26 @@ public class NovaTarefaActivity extends AppCompatActivity
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnIncluir) {
+            String nomeTarefa = edtNomeTarefa.getText().toString();
+
+            salvarNoBancoLocal(nomeTarefa);
+
             Intent intent = new Intent();
             intent.putExtra(CHAVE_NOVA_TAREFA,
-                    edtNomeTarefa.getText().toString());
+                    nomeTarefa);
 
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
+    }
+
+    private void salvarNoBancoLocal(String nomeTarefa) {
+        TarefaModelo tarefa = new TarefaModelo(nomeTarefa, false);
+
+        AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
+
+        TarefaDao tarefaDao = database.getTarefaDao();
+
+        tarefaDao.insertAll(tarefa);
     }
 }
