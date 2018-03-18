@@ -3,6 +3,7 @@ package com.example.jonathan.todoapp.data;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.example.jonathan.todoapp.TarefaModelo;
 
@@ -16,4 +17,7 @@ public interface TarefaDao {
 
     @Insert
     List<Long> insertAll(TarefaModelo... tarefa);
+
+    @Update
+    int update(TarefaModelo tarefa);
 }
