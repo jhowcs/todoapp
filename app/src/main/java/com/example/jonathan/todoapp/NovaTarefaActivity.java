@@ -18,10 +18,15 @@ import java.util.List;
 public class NovaTarefaActivity extends AppCompatActivity
         implements View.OnClickListener {
 
-    public static final String CHAVE_NOVA_TAREFA = "chave";
+    public static final String CHAVE_TAREFA = "chave";
+    public static final String CHAVE_POSICAO = "posicao";
 
     private EditText edtNomeTarefa;
     private Button btnIncluir;
+    private TarefaModelo tarefa;
+
+    private boolean isAlterando;
+    private int posicao;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,35 +36,53 @@ public class NovaTarefaActivity extends AppCompatActivity
         edtNomeTarefa = findViewById(R.id.edtNomeTarefa);
         btnIncluir = findViewById(R.id.btnIncluir);
         btnIncluir.setOnClickListener(this);
+
+        if (getIntent().hasExtra(CHAVE_TAREFA)) {
+            preencherInformacoesDaTarefa();
+            isAlterando = true;
+        }
+    }
+
+    private void preencherInformacoesDaTarefa() {
+        Intent intent = getIntent();
+        tarefa = intent.getParcelableExtra(CHAVE_TAREFA);
+        posicao = intent.getIntExtra(CHAVE_POSICAO, -1);
+        edtNomeTarefa.setText(tarefa.getDescricao());
     }
 
     @Override
     public void onClick(View view) {
         if (view.getId() == R.id.btnIncluir) {
             String nomeTarefa = edtNomeTarefa.getText().toString();
-
-            TarefaModelo tarefa = salvarNoBancoLocal(nomeTarefa);
-
             Intent intent = new Intent();
-            intent.putExtra(CHAVE_NOVA_TAREFA,
-                    tarefa);
 
+            if (isAlterando) {
+                alterarTarefaNoBancoLocal(nomeTarefa);
+                intent.putExtra(CHAVE_POSICAO, posicao);
+            } else {
+                salvarNoBancoLocal(nomeTarefa);
+            }
+
+            intent.putExtra(CHAVE_TAREFA, tarefa);
             setResult(Activity.RESULT_OK, intent);
             finish();
         }
     }
 
-    private TarefaModelo salvarNoBancoLocal(String nomeTarefa) {
-        TarefaModelo tarefa = new TarefaModelo(nomeTarefa, false);
-
+    private void alterarTarefaNoBancoLocal(String nomeTarefa) {
         AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
-
         TarefaDao tarefaDao = database.getTarefaDao();
 
+        tarefa.setDescricao(nomeTarefa);
+        tarefaDao.update(tarefa);
+    }
+
+    private void salvarNoBancoLocal(String nomeTarefa) {
+        AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
+        TarefaDao tarefaDao = database.getTarefaDao();
+
+        tarefa = new TarefaModelo(nomeTarefa, false);
         List<Long> ids = tarefaDao.insertAll(tarefa);
-
         tarefa.setUid(ids.get(0));
-
-        return tarefa;
     }
 }

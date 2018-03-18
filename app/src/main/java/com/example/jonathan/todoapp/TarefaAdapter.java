@@ -20,7 +20,8 @@ public class TarefaAdapter
     private TodoListener listener;
 
     public interface TodoListener {
-        void aoSelecionarTarefa(TarefaModelo tarefaModelo);
+        void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo);
+        void aoClicarNaTarefa(TarefaModelo tarefaModelo, int posicao);
     }
 
     public TarefaAdapter(List<TarefaModelo> lista, TodoListener listener) {
@@ -31,6 +32,11 @@ public class TarefaAdapter
     public void adicionarNovaTarefa(TarefaModelo tarefa) {
         this.lista.add(tarefa);
         notifyDataSetChanged();
+    }
+
+    public void atualizarTarefaNaLista(TarefaModelo tarefaModelo, int posicao) {
+        this.lista.set(posicao, tarefaModelo);
+        notifyItemRangeChanged(posicao, lista.size());
     }
 
     @NonNull
@@ -47,10 +53,20 @@ public class TarefaAdapter
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
         addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao, position);
+        adicionarClickNaLinha(vh.itemView, position);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
+    }
+
+    private void adicionarClickNaLinha(View view, final int posicao) {
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.aoClicarNaTarefa(lista.get(posicao), posicao);
+            }
+        });
     }
 
     private void addChangeListenerForCheckBox(final CheckBox chkExecutado,
@@ -67,7 +83,7 @@ public class TarefaAdapter
                 txtDescricao.setPaintFlags(paintFlags);
 
                 TarefaModelo tarefa = atualizarTarefa(isChecked, posicao);
-                listener.aoSelecionarTarefa(tarefa);
+                listener.aoMarcarDesmarcarTarefa(tarefa);
             }
         });
     }

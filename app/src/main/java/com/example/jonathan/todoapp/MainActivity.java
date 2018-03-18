@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
     private TarefaAdapter adapter;
 
     private static final int RC_NOVA_TAREFA = 10;
+    private static final int RC_ATUALIZA_TAREFA = 20;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,14 +34,16 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
             @Override
             public void onClick(View v) {
                 Intent intent
-                        = new Intent(MainActivity.this,
-                        NovaTarefaActivity.class);
-
-                startActivityForResult(intent, RC_NOVA_TAREFA);
+                        = new Intent(MainActivity.this, NovaTarefaActivity.class);
+                iniciarActivityNovaTarefa(intent, RC_NOVA_TAREFA);
             }
         });
 
         inicializaLista();
+    }
+
+    private void iniciarActivityNovaTarefa(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
     }
 
     private void inicializaLista() {
@@ -59,19 +62,30 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
     protected void onActivityResult(int requestCode,
                                     int resultCode,
                                     Intent data) {
-        if (resultCode == RESULT_OK && requestCode == RC_NOVA_TAREFA) {
-            if (data != null) {
-                TarefaModelo tarefaModelo =
-                        data.getParcelableExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
+        if (resultCode == RESULT_OK) {
+            TarefaModelo tarefaModelo = data.getParcelableExtra(NovaTarefaActivity.CHAVE_TAREFA);
 
+            if (requestCode == RC_NOVA_TAREFA && data != null) {
                 adapter.adicionarNovaTarefa(tarefaModelo);
+
+            } else if (requestCode == RC_ATUALIZA_TAREFA) {
+                int posicao = data.getIntExtra(NovaTarefaActivity.CHAVE_POSICAO, -1);
+                adapter.atualizarTarefaNaLista(tarefaModelo, posicao);
             }
         }
     }
 
     @Override
-    public void aoSelecionarTarefa(TarefaModelo tarefaModelo) {
+    public void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo) {
         DatabaseConcrete.getInstance(this.getApplicationContext())
                 .getTarefaDao().update(tarefaModelo);
+    }
+
+    @Override
+    public void aoClicarNaTarefa(TarefaModelo tarefaModelo, int posicao) {
+        Intent intent = new Intent(MainActivity.this, NovaTarefaActivity.class);
+        intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA, tarefaModelo);
+        intent.putExtra(NovaTarefaActivity.CHAVE_POSICAO, posicao);
+        iniciarActivityNovaTarefa(intent, RC_ATUALIZA_TAREFA);
     }
 }
