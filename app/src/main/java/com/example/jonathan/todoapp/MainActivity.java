@@ -12,7 +12,7 @@ import com.example.jonathan.todoapp.data.DatabaseConcrete;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TarefaAdapter.TodoListener {
 
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         List<TarefaModelo> lista = DatabaseConcrete.getInstance(this.getApplicationContext())
                 .getTarefaDao().getAll();
 
-        adapter = new TarefaAdapter(lista);
+        adapter = new TarefaAdapter(lista, this);
         LinearLayoutManager llm = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         rvListaTarefa.setLayoutManager(llm);
@@ -67,5 +67,11 @@ public class MainActivity extends AppCompatActivity {
                 adapter.adicionarNovaTarefa(tarefaModelo);
             }
         }
+    }
+
+    @Override
+    public void aoSelecionarTarefa(TarefaModelo tarefaModelo) {
+        DatabaseConcrete.getInstance(this.getApplicationContext())
+                .getTarefaDao().update(tarefaModelo);
     }
 }

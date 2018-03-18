@@ -17,9 +17,15 @@ public class TarefaAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<TarefaModelo> lista = new ArrayList<>();
+    private TodoListener listener;
 
-    public TarefaAdapter(List<TarefaModelo> lista) {
+    public interface TodoListener {
+        void aoSelecionarTarefa(TarefaModelo tarefaModelo);
+    }
+
+    public TarefaAdapter(List<TarefaModelo> lista, TodoListener listener) {
         this.lista = lista;
+        this.listener = listener;
     }
 
     public void adicionarNovaTarefa(TarefaModelo tarefa) {
@@ -40,14 +46,17 @@ public class TarefaAdapter
         TarefaModelo tarefaModelo = lista.get(position);
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
-        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao);
+        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao, position);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
     }
 
-    private void addChangeListenerForCheckBox(final CheckBox chkExecutado, final TextView txtDescricao) {
+    private void addChangeListenerForCheckBox(final CheckBox chkExecutado,
+                                              final TextView txtDescricao,
+                                              final int posicao) {
+
         chkExecutado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -55,10 +64,21 @@ public class TarefaAdapter
                         ? txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                         : Paint.LINEAR_TEXT_FLAG;
 
-                    txtDescricao.setPaintFlags(paintFlags);
+                txtDescricao.setPaintFlags(paintFlags);
+
+                TarefaModelo tarefa = atualizarTarefa(isChecked, posicao);
+                listener.aoSelecionarTarefa(tarefa);
             }
         });
     }
+
+    private TarefaModelo atualizarTarefa(boolean isChecked, int posicao) {
+        TarefaModelo tarefaModelo = lista.get(posicao);
+        tarefaModelo.setExecutado(isChecked);
+
+        return tarefaModelo;
+    }
+
 
     @Override
     public int getItemCount() {
