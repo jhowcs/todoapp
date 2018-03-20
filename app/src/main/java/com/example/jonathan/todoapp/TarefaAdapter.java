@@ -29,16 +29,6 @@ public class TarefaAdapter
         this.listener = listener;
     }
 
-    public void adicionarNovaTarefa(TarefaModelo tarefa) {
-        this.lista.add(tarefa);
-        notifyDataSetChanged();
-    }
-
-    public void atualizarTarefaNaLista(TarefaModelo tarefaModelo, int posicao) {
-        this.lista.set(posicao, tarefaModelo);
-        notifyItemRangeChanged(posicao, lista.size());
-    }
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -58,6 +48,11 @@ public class TarefaAdapter
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
+    }
+
+    @Override
+    public int getItemCount() {
+        return lista.size();
     }
 
     private void adicionarClickNaLinha(View view, final int posicao) {
@@ -82,30 +77,41 @@ public class TarefaAdapter
 
                 txtDescricao.setPaintFlags(paintFlags);
 
-                TarefaModelo tarefa = atualizarTarefa(isChecked, posicao);
+                TarefaModelo tarefa = marcarTarefa(isChecked, posicao);
                 listener.aoMarcarDesmarcarTarefa(tarefa);
             }
         });
     }
 
-    private TarefaModelo atualizarTarefa(boolean isChecked, int posicao) {
+    private TarefaModelo marcarTarefa(boolean isChecked, int posicao) {
         TarefaModelo tarefaModelo = lista.get(posicao);
         tarefaModelo.setExecutado(isChecked);
 
         return tarefaModelo;
     }
 
+    public void adicionarNovaTarefa(TarefaModelo tarefa) {
+        this.lista.add(tarefa);
+        notifyDataSetChanged();
+    }
 
-    @Override
-    public int getItemCount() {
-        return lista.size();
+    public void atualizarTarefaNaLista(TarefaModelo tarefaModelo, int posicao) {
+        this.lista.set(posicao, tarefaModelo);
+        notifyItemRangeChanged(posicao, lista.size());
+    }
+
+    public TarefaModelo removerItem(final int posicao) {
+        TarefaModelo tarefaRemovida = lista.remove(posicao);
+        notifyItemRemoved(posicao);
+
+        return tarefaRemovida;
     }
 
     static class TarefaViewHolder extends RecyclerView.ViewHolder {
         private CheckBox chkExecutado;
         private TextView txtDescricao;
 
-        public TarefaViewHolder(View view) {
+        TarefaViewHolder(View view) {
             super(view);
 
             chkExecutado = view.findViewById(R.id.chkExecutado);
