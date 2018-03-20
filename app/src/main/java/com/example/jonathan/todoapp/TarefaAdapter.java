@@ -42,7 +42,7 @@ public class TarefaAdapter
         TarefaModelo tarefaModelo = lista.get(position);
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
-        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao, position);
+        addChangeListenerForCheckBox(vh);
         adicionarClickNaLinha(vh.itemView, position);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
@@ -64,20 +64,18 @@ public class TarefaAdapter
         });
     }
 
-    private void addChangeListenerForCheckBox(final CheckBox chkExecutado,
-                                              final TextView txtDescricao,
-                                              final int posicao) {
+    private void addChangeListenerForCheckBox(final TarefaViewHolder vh) {
 
-        chkExecutado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        vh.chkExecutado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final int paintFlags = isChecked
-                        ? txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+                        ? vh.txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                         : Paint.LINEAR_TEXT_FLAG;
 
-                txtDescricao.setPaintFlags(paintFlags);
+                vh.txtDescricao.setPaintFlags(paintFlags);
 
-                TarefaModelo tarefa = marcarTarefa(isChecked, posicao);
+                TarefaModelo tarefa = marcarTarefa(isChecked, vh.getAdapterPosition());
                 listener.aoMarcarDesmarcarTarefa(tarefa);
             }
         });
@@ -92,7 +90,7 @@ public class TarefaAdapter
 
     public void adicionarNovaTarefa(TarefaModelo tarefa) {
         this.lista.add(tarefa);
-        notifyDataSetChanged();
+        notifyItemInserted(this.lista.size());
     }
 
     public void atualizarTarefaNaLista(TarefaModelo tarefaModelo, int posicao) {
