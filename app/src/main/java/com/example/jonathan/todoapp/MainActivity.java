@@ -6,9 +6,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
 import com.example.jonathan.todoapp.data.DatabaseConcrete;
+import com.example.jonathan.todoapp.data.TarefaDao;
 
 import java.util.List;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
         });
 
         inicializaLista();
+        adicionaEventoDeSwipeNaLista();
     }
 
     private void iniciarActivityNovaTarefa(Intent intent, int requestCode) {
@@ -55,7 +58,28 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
                 LinearLayoutManager.VERTICAL, false);
         rvListaTarefa.setLayoutManager(llm);
         rvListaTarefa.setAdapter(adapter);
+    }
 
+    private void adicionaEventoDeSwipeNaLista() {
+        ItemTouchHelper.SimpleCallback itemTouchCallback
+                = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                TarefaAdapter.TarefaViewHolder vh = (TarefaAdapter.TarefaViewHolder) viewHolder;
+                TarefaModelo itemRemovido = adapter.removerItem(vh.getAdapterPosition());
+                TarefaDao tarefaDao
+                        = DatabaseConcrete.getInstance(MainActivity.this).getTarefaDao();
+                tarefaDao.delete(itemRemovido);
+            }
+        };
+
+        new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(rvListaTarefa);
     }
 
     @Override
