@@ -6,13 +6,13 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements TarefaAdapter.TarefaCallback {
 
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
@@ -44,17 +44,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inicializaLista() {
-        List<TarefaModelo> lista = new ArrayList<>();
-        lista.add(new TarefaModelo("Tarefa 1", false));
-        lista.add(new TarefaModelo("Tarefa 2", true));
-        lista.add(new TarefaModelo("Tarefa 3", false));
+        List<TarefaModelo> lista =
+                AppDatabase.appDatabaseInstance(this)
+                        .getTarefaDao()
+                        .getListaDeTarefas();
 
-        adapter = new TarefaAdapter(lista);
+        adapter = new TarefaAdapter(lista, this);
         LinearLayoutManager llm = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         rvListaTarefa.setLayoutManager(llm);
         rvListaTarefa.setAdapter(adapter);
-
+        adicionaEventoDeSwipeNaLista();
     }
 
     @Override
@@ -63,11 +63,39 @@ public class MainActivity extends AppCompatActivity {
                                     Intent data) {
         if (resultCode == RESULT_OK && requestCode == RC_NOVA_TAREFA) {
             if (data != null) {
-                String novaTarefa =
-                        data.getStringExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
-
-                Toast.makeText(this, novaTarefa, Toast.LENGTH_SHORT).show();
+                TarefaModelo tarefaModelo =
+                        data.getParcelableExtra(NovaTarefaActivity.CHAVE_NOVA_TAREFA);
+                adapter.adicionaTarefaNaLista(tarefaModelo);
             }
         }
+    }
+
+    @Override
+    public void aoAtualizar(TarefaModelo tarefaAtualizada) {
+        AppDatabase.appDatabaseInstance(this)
+                .getTarefaDao()
+                .atualizarTarefa(tarefaAtualizada);
+    }
+
+    private void adicionaEventoDeSwipeNaLista() {
+        ItemTouchHelper.SimpleCallback itemTouchCallback
+                = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                TarefaAdapter.TarefaViewHolder vh = (TarefaAdapter.TarefaViewHolder) viewHolder;
+                TarefaModelo itemRemovido = adapter.removerItem(vh.getAdapterPosition());
+                AppDatabase.appDatabaseInstance(MainActivity.this)
+                        .getTarefaDao()
+                        .excluirTarefa(itemRemovido);
+            }
+        };
+
+        new ItemTouchHelper(itemTouchCallback).attachToRecyclerView(rvListaTarefa);
     }
 }

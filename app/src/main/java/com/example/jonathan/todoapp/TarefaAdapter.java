@@ -16,10 +16,27 @@ import java.util.List;
 public class TarefaAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
+    private final TarefaCallback tarefaCallback;
     private List<TarefaModelo> lista = new ArrayList<>();
 
-    public TarefaAdapter(List<TarefaModelo> lista) {
+    public TarefaModelo removerItem(int adapterPosition) {
+        TarefaModelo itemRemovido = lista.remove(adapterPosition);
+        notifyItemRemoved(adapterPosition);
+        return itemRemovido;
+    }
+
+    public interface TarefaCallback {
+        void aoAtualizar(TarefaModelo tarefaAtualizada);
+    }
+
+    public TarefaAdapter(List<TarefaModelo> lista, TarefaCallback callback) {
         this.lista = lista;
+        this.tarefaCallback = callback;
+    }
+
+    public void adicionaTarefaNaLista(TarefaModelo tarefa) {
+        lista.add(tarefa);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -35,14 +52,15 @@ public class TarefaAdapter
         TarefaModelo tarefaModelo = lista.get(position);
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
-        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao);
+        addChangeListenerForCheckBox(vh.chkExecutado, vh.txtDescricao, position);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
     }
 
-    private void addChangeListenerForCheckBox(final CheckBox chkExecutado, final TextView txtDescricao) {
+    private void addChangeListenerForCheckBox(final CheckBox chkExecutado, final TextView txtDescricao,
+                                              final int posicao) {
         chkExecutado.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -50,7 +68,11 @@ public class TarefaAdapter
                         ? txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                         : Paint.LINEAR_TEXT_FLAG;
 
-                    txtDescricao.setPaintFlags(paintFlags);
+                TarefaModelo tarefaModelo = lista.get(posicao);
+                tarefaModelo.setExecutado(isChecked);
+                tarefaCallback.aoAtualizar(tarefaModelo);
+
+                txtDescricao.setPaintFlags(paintFlags);
             }
         });
     }
