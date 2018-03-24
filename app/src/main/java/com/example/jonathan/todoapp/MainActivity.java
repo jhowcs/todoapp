@@ -73,8 +73,9 @@ public class MainActivity extends AppCompatActivity implements TarefaAdapter.Tod
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 TarefaAdapter.TarefaViewHolder vh = (TarefaAdapter.TarefaViewHolder) viewHolder;
                 TarefaModelo itemRemovido = adapter.removerItem(vh.getAdapterPosition());
-                TarefaDao tarefaDao
-                        = DatabaseConcrete.getInstance(MainActivity.this).getTarefaDao();
+                TarefaDao tarefaDao = DatabaseConcrete
+                        .getInstance(MainActivity.this.getApplicationContext())
+                        .getTarefaDao();
                 tarefaDao.delete(itemRemovido);
             }
         };
