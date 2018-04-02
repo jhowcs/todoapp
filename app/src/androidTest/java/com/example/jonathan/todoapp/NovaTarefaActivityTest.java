@@ -60,4 +60,20 @@ public class NovaTarefaActivityTest {
         Espresso.onView(ViewMatchers.withText(tarefaParaAlteração))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
+
+    @Test
+    public void aoAlterarUmaTarefa_deveFinalizarActivity() {
+        Intent intent = new Intent();
+        intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
+                new TarefaModelo("Tarefa para Alteração", false));
+        iniciarActivity(intent);
+        Espresso.onView(ViewMatchers.withId(R.id.edtNomeTarefa))
+                .perform(ViewActions.clearText(),
+                        ViewActions.typeText("Tarefa Alterada"));
+        Espresso.onView(ViewMatchers.withId(R.id.btnIncluir))
+                .perform(ViewActions.click());
+
+        Assert.assertTrue(rule.getActivity().isFinishing());
+
+    }
 }

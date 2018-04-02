@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.assertion.ViewAssertions;
+import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.Intents;
 import android.support.test.espresso.intent.matcher.IntentMatchers;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
@@ -46,7 +48,7 @@ public class MainActivityTest {
 
         dao.insertAll(new TarefaModelo("Tarefa 1", false),
                 new TarefaModelo("Tarefa 2", false),
-                new TarefaModelo("Tarefa 3", false),
+                new TarefaModelo("Tarefa 3", true),
                 new TarefaModelo("Tarefa 4", false),
                 new TarefaModelo("Tarefa 5", false),
                 new TarefaModelo("Tarefa 6", false));
@@ -100,5 +102,62 @@ public class MainActivityTest {
                 .perform(ViewActions.swipeLeft());
         Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
                 .check(RecyclerViewItemCountAssertion.withItemCount(5));
+    }
+
+    @Test
+    public void aoMarcarTarefaComoFeita_deveMarcarTextoComLinha() {
+        iniciarActivity();
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.chkExecutado),
+                ViewMatchers.hasSibling(ViewMatchers.withText("Tarefa 4"))))
+                .perform(ViewActions.click());
+
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
+                ViewMatchers.hasSibling(ViewMatchers.withText("Tarefa 4"))))
+                .check(PaintFlagTextAssertion.withStrikeThroughFlag());
+    }
+
+    @Test
+    public void aoDesmarcarTarefaComoFeita_deveRemoverLinhaNoMeioDoTexto() {
+        iniciarActivity();
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.chkExecutado),
+                ViewMatchers.hasSibling(ViewMatchers.withText("Tarefa 3"))))
+                .perform(ViewActions.click());
+
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
+                ViewMatchers.hasSibling(ViewMatchers.withText("Tarefa 3"))))
+                .check(PaintFlagTextAssertion.withLinearFlag());
+    }
+
+    @Test
+    public void aoClicarEmUmaTarefa_deveVerificarChamadaAIntentParaAlteracao() {
+        iniciarActivity();
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
+                ViewMatchers.withText("Tarefa 4")))
+                .perform(ViewActions.click());
+        Intents.intended(IntentMatchers.hasComponent(NovaTarefaActivity.class.getName()));
+    }
+
+    @Test
+    public void aoAlterarTarefa_deveExibirTarefaAlteradaNaListagem() {
+        Intent intentTarefaAlterada = new Intent();
+        String descricaoTarefaAlterada = "Tarefa 4 alterada";
+        final int posicaoAlterada = 3;
+
+        iniciarActivity();
+
+        intentTarefaAlterada.putExtra(NovaTarefaActivity.CHAVE_POSICAO, posicaoAlterada);
+        intentTarefaAlterada.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
+                new TarefaModelo(descricaoTarefaAlterada, false));
+
+        Intents.intending(IntentMatchers.hasComponent(NovaTarefaActivity.class.getName()))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,
+                        intentTarefaAlterada));
+
+        Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
+                .perform(RecyclerViewActions.actionOnItemAtPosition(posicaoAlterada, ViewActions.click()));
+
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
+                ViewMatchers.withText(descricaoTarefaAlterada)))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
