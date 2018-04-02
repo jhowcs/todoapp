@@ -17,6 +17,7 @@ import com.example.jonathan.todoapp.data.TarefaDao;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
 import com.example.jonathan.todoapp.feature.listagem.MainActivity;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -89,5 +90,15 @@ public class MainActivityTest {
         Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
                 .check(RecyclerViewItemCountAssertion.withItemCount(7));
 
+    }
+
+    @Test
+    public void aoRealizarSwipeParaEsquerda_deveRemoverTarefaDaListagem() {
+        iniciarActivity();
+        Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
+                ViewMatchers.withText("Tarefa 4")))
+                .perform(ViewActions.swipeLeft());
+        Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
+                .check(RecyclerViewItemCountAssertion.withItemCount(5));
     }
 }
