@@ -1,5 +1,7 @@
 package com.example.jonathan.todoapp;
 
+import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
@@ -69,5 +71,23 @@ public class MainActivityTest {
         iniciarActivity();
         Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
                 .check(RecyclerViewItemCountAssertion.withItemCount(6));
+    }
+
+    @Test
+    public void aoIncluirNovaTarefa_deveExibilaNaListagem() {
+        iniciarActivity();
+
+        Intent intentNovaTarefa = new Intent();
+        intentNovaTarefa.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
+                new TarefaModelo("Tarefa 7", false));
+
+        Intents.intending(IntentMatchers.hasComponent(NovaTarefaActivity.class.getName()))
+                .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,
+                        intentNovaTarefa));
+        Espresso.onView(ViewMatchers.withId(R.id.fabNovaTarefa)).perform(ViewActions.click());
+
+        Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
+                .check(RecyclerViewItemCountAssertion.withItemCount(7));
+
     }
 }
