@@ -1,15 +1,19 @@
 package com.example.jonathan.todoapp;
 
 import android.content.Intent;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.Espresso;
 import android.support.test.espresso.action.ViewActions;
+import android.support.test.espresso.assertion.ViewAssertions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.jonathan.todoapp.data.DatabaseConcrete;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,9 +27,18 @@ public class NovaTarefaActivityTest {
             true,
             false);
 
+    private void iniciarActivity(Intent intent) {
+        rule.launchActivity(intent);
+    }
+
+    @Before
+    public void setUp() {
+        DatabaseConcrete.switchToInMemoryDatabase(InstrumentationRegistry.getTargetContext());
+    }
+
     @Test
     public void aoClicarEmIncluir_deveFinalizarActivity() {
-        rule.launchActivity(new Intent());
+        iniciarActivity(null);
         Espresso.onView(ViewMatchers.withId(R.id.edtNomeTarefa))
                 .perform(ViewActions.typeText("estudar espresso"),
                         ViewActions.closeSoftKeyboard());
@@ -36,5 +49,15 @@ public class NovaTarefaActivityTest {
         Assert.assertTrue(rule.getActivity().isFinishing());
     }
 
+    @Test
+    public void aoIniciarActivityComTarefaParaAlteracao_deveExibirDescricaoDaTarefa() {
+        String tarefaParaAlteração = "Tarefa para Alteração";
 
+        Intent intent = new Intent();
+        intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
+                new TarefaModelo(tarefaParaAlteração, false));
+        iniciarActivity(intent);
+        Espresso.onView(ViewMatchers.withText(tarefaParaAlteração))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+    }
 }
