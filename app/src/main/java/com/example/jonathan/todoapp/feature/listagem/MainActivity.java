@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.feature.listagem;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
+import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.TarefaModelo;
 import com.example.jonathan.todoapp.data.DatabaseConcrete;
 import com.example.jonathan.todoapp.data.TarefaDao;
 

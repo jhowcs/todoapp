@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.feature.listagem;
 
 import android.graphics.Paint;
 import android.support.annotation.NonNull;
@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.TarefaModelo;
 
 import java.util.ArrayList;
 import java.util.List;

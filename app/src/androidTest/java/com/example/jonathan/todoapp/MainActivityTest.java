@@ -12,6 +12,8 @@ import android.support.test.runner.AndroidJUnit4;
 
 import com.example.jonathan.todoapp.data.DatabaseConcrete;
 import com.example.jonathan.todoapp.data.TarefaDao;
+import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
+import com.example.jonathan.todoapp.feature.listagem.MainActivity;
 
 import org.junit.Before;
 import org.junit.Rule;
