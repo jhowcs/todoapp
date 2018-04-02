@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.0'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -20,6 +20,12 @@ allprojects {
         google()
         jcenter()
     }
+}
+
+ext {
+    supportLibrary = '27.1.0'
+    room = '1.0.0'
+    espresso = '3.0.1'
 }
 
 task clean(type: Delete) {

@@ -14,29 +14,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TarefaAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final TarefaCallback tarefaCallback;
     private List<TarefaModelo> lista = new ArrayList<>();
 
-    public TarefaModelo removerItem(int adapterPosition) {
-        TarefaModelo itemRemovido = lista.remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
-        return itemRemovido;
-    }
-
     public interface TarefaCallback {
-        void aoAtualizar(TarefaModelo tarefaAtualizada);
+        void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo);
+
+        void aoClicarNaTarefa(TarefaModelo tarefaModelo, int posicao);
+
     }
 
     public TarefaAdapter(List<TarefaModelo> lista, TarefaCallback callback) {
         this.lista = lista;
         this.tarefaCallback = callback;
-    }
-
-    public void adicionaTarefaNaLista(TarefaModelo tarefa) {
-        lista.add(tarefa);
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -53,10 +45,26 @@ public class TarefaAdapter
         TarefaViewHolder vh = (TarefaViewHolder) holder;
 
         addChangeListenerForCheckBox(vh);
+        adicionarClickNaLinha(vh);
 
         vh.txtDescricao.setText(tarefaModelo.getDescricao());
         vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
 
+    }
+
+    private void adicionarClickNaLinha(final TarefaViewHolder vh) {
+        vh.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int posicao = vh.getAdapterPosition();
+                tarefaCallback.aoClicarNaTarefa(lista.get(posicao), posicao);
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
+        return lista.size();
     }
 
     private void addChangeListenerForCheckBox(final TarefaViewHolder vh) {
@@ -67,25 +75,43 @@ public class TarefaAdapter
                         ? vh.txtDescricao.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
                         : Paint.LINEAR_TEXT_FLAG;
 
-                TarefaModelo tarefaModelo = lista.get(vh.getAdapterPosition());
-                tarefaModelo.setExecutado(isChecked);
-                tarefaCallback.aoAtualizar(tarefaModelo);
-
                 vh.txtDescricao.setPaintFlags(paintFlags);
+
+                TarefaModelo tarefa = marcarTarefa(isChecked, vh.getAdapterPosition());
+                tarefaCallback.aoMarcarDesmarcarTarefa(tarefa);
             }
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return lista.size();
+    private TarefaModelo marcarTarefa(boolean isChecked, int posicao) {
+        TarefaModelo tarefaModelo = lista.get(posicao);
+        tarefaModelo.setExecutado(isChecked);
+
+        return tarefaModelo;
     }
 
-    static class TarefaViewHolder extends RecyclerView.ViewHolder {
+    public void adicionarNovaTarefa(TarefaModelo tarefa) {
+        this.lista.add(tarefa);
+        notifyDataSetChanged();
+    }
+
+    public void atualizarTarefaNaLista(TarefaModelo tarefaModelo, int posicao) {
+        this.lista.set(posicao, tarefaModelo);
+        notifyItemRangeChanged(posicao, lista.size());
+    }
+
+    public TarefaModelo removerItem(final int posicao) {
+        TarefaModelo tarefaRemovida = lista.remove(posicao);
+        notifyItemRemoved(posicao);
+
+        return tarefaRemovida;
+    }
+
+    class TarefaViewHolder extends RecyclerView.ViewHolder {
         private CheckBox chkExecutado;
         private TextView txtDescricao;
 
-        public TarefaViewHolder(View view) {
+        TarefaViewHolder(View view) {
             super(view);
 
             chkExecutado = view.findViewById(R.id.chkExecutado);

@@ -10,7 +10,9 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.After;
+import com.example.jonathan.todoapp.data.DatabaseConcrete;
+import com.example.jonathan.todoapp.data.TarefaDao;
+
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -28,40 +30,42 @@ public class MainActivityTest {
 
     @Before
     public void setUp() {
-        AppDatabase.swapToInMemomyDatabase(
-                InstrumentationRegistry.getTargetContext());
-        popularBancoDeDadosComFakeData();
+        DatabaseConcrete.switchToInMemoryDatabase(InstrumentationRegistry.getTargetContext());
+        popularBancoComDadosEstaticos();
     }
 
-    private void popularBancoDeDadosComFakeData() {
-        AppDatabase db = AppDatabase
-                .appDatabaseInstance(
-                        InstrumentationRegistry.getTargetContext());
-        TarefaDao dao = db.getTarefaDao();
+    private void popularBancoComDadosEstaticos() {
+        TarefaDao dao = DatabaseConcrete
+                .getInstance(InstrumentationRegistry.getTargetContext())
+                .getTarefaDao();
 
-        dao.inserirTarefa(new TarefaModelo("tarefa 1", false));
-        dao.inserirTarefa(new TarefaModelo("tarefa 2", false));
-        dao.inserirTarefa(new TarefaModelo("tarefa 3", false));
-        dao.inserirTarefa(new TarefaModelo("tarefa 4", false));
-        dao.inserirTarefa(new TarefaModelo("tarefa 5", false));
-
+        dao.insertAll(new TarefaModelo("Tarefa 1", false),
+                new TarefaModelo("Tarefa 2", false),
+                new TarefaModelo("Tarefa 3", false),
+                new TarefaModelo("Tarefa 4", false),
+                new TarefaModelo("Tarefa 5", false),
+                new TarefaModelo("Tarefa 6", false));
     }
 
-    @After
-    public void tearDown() {
-
+    private void iniciarActivity() {
+        rule.launchActivity(new Intent());
     }
 
     @Test
-    public void aoClicarNoBotaoDeIncluir_deveAbrirUIDeInclusaoDeTarefa() {
-        rule.launchActivity(new Intent());
+    public void aoClicarNoBotaoDeIncluir_deveAbrirUIDeInclusaoDeTarefa() throws Exception {
+        iniciarActivity();
 
         Espresso.onView(ViewMatchers.withId(R.id.fabNovaTarefa))
                 .perform(ViewActions.click());
 
         Intents.intended(
                 IntentMatchers.hasComponent(NovaTarefaActivity.class.getName()));
-
     }
 
+    @Test
+    public void aoIniciaActivity_deveExibirListaComSeisTarefas() {
+        iniciarActivity();
+        Espresso.onView(ViewMatchers.withId(R.id.rvListaTarefa))
+                .check(RecyclerViewItemCountAssertion.withItemCount(6));
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.data;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
@@ -6,20 +6,22 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
+import com.example.jonathan.todoapp.TarefaModelo;
+
 import java.util.List;
 
 @Dao
 public interface TarefaDao {
 
-    @Query("select * from tarefa")
-    List<TarefaModelo> getListaDeTarefas();
+    @Query("Select * from tarefa")
+    List<TarefaModelo> getAll();
 
     @Insert
-    long inserirTarefa(TarefaModelo tarefa);
+    List<Long> insertAll(TarefaModelo... tarefa);
 
     @Update
-    int atualizarTarefa(TarefaModelo tarefa);
+    int update(TarefaModelo tarefa);
 
     @Delete
-    int excluirTarefa(TarefaModelo tarefaParaExclusao);
+    void delete(TarefaModelo tarefa);
 }

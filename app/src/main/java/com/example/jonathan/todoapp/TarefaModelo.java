@@ -19,6 +19,7 @@ public class TarefaModelo implements Parcelable {
     }
 
     protected TarefaModelo(Parcel in) {
+        id = in.readLong();
         descricao = in.readString();
         isExecutado = in.readByte() != 0;
     }
@@ -58,6 +59,7 @@ public class TarefaModelo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
         dest.writeString(descricao);
         dest.writeByte((byte) (isExecutado ? 1 : 0));
     }
