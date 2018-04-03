@@ -28,6 +28,9 @@ jobs:
           destination: reports
       - store_test_results:
           path: app/build/test-results
+      - run:
+          name: Gradle build (debug)
+          command: ./gradlew -PciBuild=true :mobile:assembleDebug :mobile:assembleAndroidTest
       - store_artifacts:
           path: app/build/outputs/apk/
           destination: /apk/
