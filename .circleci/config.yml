@@ -29,6 +29,12 @@ jobs:
       - store_test_results:
           path: app/build/test-results
       - run:
+          name: Run Jacoco Report
+          command: ./gradlew -PciBuild=true :app:connectedAndroidTest
+      - store_artifacts:
+          path: app/build/reports/coverage
+          destination: jacoco
+      - run:
           name: Gradle build (debug)
           command: ./gradlew -PciBuild=true :app:assembleDebug :app:assembleAndroidTest
       - store_artifacts:
