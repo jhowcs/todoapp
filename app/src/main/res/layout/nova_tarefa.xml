@@ -1,25 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/nome_tarefa"/>
+        android:text="@string/nome_tarefa"
+        android:textColor="#6b676b"
+        android:textSize="18sp" />
 
-    <EditText
+    <android.support.v7.widget.AppCompatEditText
         android:id="@+id/edtNomeTarefa"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:backgroundTint="@color/gray"
+        android:inputType="text"
         android:maxLines="1"
-        android:inputType="text"/>
+        android:paddingEnd="0dp"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingStart="0dp"
+        tools:text="Tarefa 01" />
 
     <Button
         android:id="@+id/btnIncluir"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/blue_selector"
         android:text="@string/incluir_tarefa"
-        android:textAllCaps="false"/>
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
 
 </LinearLayout>

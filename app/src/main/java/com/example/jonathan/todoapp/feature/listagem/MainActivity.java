@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -61,6 +62,8 @@ public class MainActivity extends AppCompatActivity
         LinearLayoutManager llm = new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false);
         rvListaTarefa.setLayoutManager(llm);
+        rvListaTarefa.addItemDecoration(new DividerItemDecoration(MainActivity.this.getApplicationContext(),
+                DividerItemDecoration.VERTICAL));
         rvListaTarefa.setAdapter(adapter);
     }
 
