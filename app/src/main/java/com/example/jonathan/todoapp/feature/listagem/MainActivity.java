@@ -12,9 +12,9 @@ import android.view.View;
 
 import com.example.jonathan.todoapp.R;
 import com.example.jonathan.todoapp.TarefaModelo;
-import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
-import com.example.jonathan.todoapp.repository.local.TarefaDao;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
+import com.example.jonathan.todoapp.repository.TarefaRepository;
+import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
 
 import java.util.List;
 
@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity
 
     private static final int RC_NOVA_TAREFA = 10;
     private static final int RC_ATUALIZA_TAREFA = 20;
+
+    private TarefaRepository repositorio;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,9 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        repositorio = new TarefaRepository(DatabaseConcrete
+                .getInstance(MainActivity.this.getApplicationContext()).getTarefaDao());
+
         inicializaLista();
         adicionaEventoDeSwipeNaLista();
     }
@@ -55,8 +60,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void inicializaLista() {
-        List<TarefaModelo> lista = DatabaseConcrete.getInstance(this.getApplicationContext())
-                .getTarefaDao().getAll();
+        List<TarefaModelo> lista = repositorio.carregarListaDeTarefas();
 
         adapter = new TarefaAdapter(lista, this);
         LinearLayoutManager llm = new LinearLayoutManager(this,
@@ -80,9 +84,7 @@ public class MainActivity extends AppCompatActivity
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                 TarefaAdapter.TarefaViewHolder vh = (TarefaAdapter.TarefaViewHolder) viewHolder;
                 TarefaModelo itemRemovido = adapter.removerItem(vh.getAdapterPosition());
-                TarefaDao tarefaDao = DatabaseConcrete.getInstance(MainActivity.this.getApplicationContext())
-                        .getTarefaDao();
-                tarefaDao.delete(itemRemovido);
+                repositorio.removerTarefa(itemRemovido);
             }
         };
 
@@ -108,8 +110,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo) {
-        DatabaseConcrete.getInstance(this.getApplicationContext())
-                .getTarefaDao().update(tarefaModelo);
+        repositorio.alterarTarefa(tarefaModelo);
     }
 
     @Override

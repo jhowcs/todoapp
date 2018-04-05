@@ -11,9 +11,8 @@ import android.widget.EditText;
 
 import com.example.jonathan.todoapp.R;
 import com.example.jonathan.todoapp.TarefaModelo;
-import com.example.jonathan.todoapp.repository.local.AppDatabase;
+import com.example.jonathan.todoapp.repository.TarefaRepository;
 import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
-import com.example.jonathan.todoapp.repository.local.TarefaDao;
 
 import java.util.List;
 
@@ -29,6 +28,7 @@ public class NovaTarefaActivity extends AppCompatActivity
 
     private boolean isAlterando;
     private int posicao;
+    private TarefaRepository repositorio;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,6 +43,9 @@ public class NovaTarefaActivity extends AppCompatActivity
             preencherInformacoesDaTarefa();
             isAlterando = true;
         }
+
+        repositorio = new TarefaRepository(DatabaseConcrete
+                .getInstance(NovaTarefaActivity.this.getApplicationContext()).getTarefaDao());
     }
 
     private void preencherInformacoesDaTarefa() {
@@ -72,19 +75,13 @@ public class NovaTarefaActivity extends AppCompatActivity
     }
 
     private void alterarTarefaNoBancoLocal(String nomeTarefa) {
-        AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
-        TarefaDao tarefaDao = database.getTarefaDao();
-
         tarefa.setDescricao(nomeTarefa);
-        tarefaDao.update(tarefa);
+        repositorio.alterarTarefa(tarefa);
     }
 
     private void salvarNoBancoLocal(String nomeTarefa) {
-        AppDatabase database = DatabaseConcrete.getInstance(this.getApplicationContext());
-        TarefaDao tarefaDao = database.getTarefaDao();
-
         tarefa = new TarefaModelo(nomeTarefa, false);
-        List<Long> ids = tarefaDao.insertAll(tarefa);
+        List<Long> ids = repositorio.inserirTarefa(tarefa);
         tarefa.setId(ids.get(0));
     }
 }
