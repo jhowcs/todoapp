@@ -4,9 +4,6 @@ references:
 
   workspace: &workspace
     ~/code
-  attach_debug_workspace: &attach_debug_workspace
-    attach_workspace:
-      at: *workspace
 
   android_config: &android_config
     working_directory: *workspace
@@ -82,22 +79,11 @@ jobs:
           path: app/build/outputs/apk/
           destination: /apk/
 
-  test_instrumented_nexus6P:
-    steps:
-      - *attach_debug_workspace
       - *gcc_to_file
       - *gcc_auth
       - *export_apk_files_to_env
       - *set_google_cloud_target
       - *run_on_nexus6P
-
-  test_instrumented_motoG4Plus:
-    steps:
-      - *attach_debug_workspace
-      - *gcc_to_file
-      - *gcc_auth
-      - *export_apk_files_to_env
-      - *set_google_cloud_target
       - *run_on_motog4_plus
 
 workflows:
@@ -105,6 +91,3 @@ workflows:
   build_and_test:
     jobs:
       - build
-      - test_instrumented_nexus6P:
-        requires:
-          - build
