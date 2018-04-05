@@ -11,9 +11,9 @@ import android.widget.EditText;
 
 import com.example.jonathan.todoapp.R;
 import com.example.jonathan.todoapp.TarefaModelo;
-import com.example.jonathan.todoapp.data.AppDatabase;
-import com.example.jonathan.todoapp.data.DatabaseConcrete;
-import com.example.jonathan.todoapp.data.TarefaDao;
+import com.example.jonathan.todoapp.repository.local.AppDatabase;
+import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
+import com.example.jonathan.todoapp.repository.local.TarefaDao;
 
 import java.util.List;
 
