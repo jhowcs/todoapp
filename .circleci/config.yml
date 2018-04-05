@@ -107,6 +107,7 @@ workflows:
       - test_instrumented_nexus6P:
         requires:
           - build
-      test_instrumented_motoG4Plus:
+      - test_instrumented_motoG4Plus:
         requires:
           - build
+          
