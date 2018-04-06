@@ -1,25 +1,69 @@
 version: 2
-jobs:
-  build:
-    working_directory: ~/code
+
+references:
+
+  workspace: &workspace
+    ~/code
+
+  android_config: &android_config
+    working_directory: *workspace
     docker:
       - image: circleci/android:api-27-alpha
     environment:
       JVM_OPTS: -Xmx3200m
+
+  cache_key: &cache_key
+    key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+  restore_cache: &restore_cache
+    restore_cache:
+      <<: *cache_key
+  save_cache: &save_cache
+    save_cache:
+      <<: *cache_key
+      paths:
+        - ~/.gradle
+
+  # Export Google Cloud Credentials
+  gcc_to_file: &gcc_to_file
+    run:
+      name: Dump Google Cloud Credentials to file
+      command: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
+  gcc_auth: &gcc_auth
+    run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
+  set_google_cloud_target: &set_google_cloud_target
+    run:
+      name: Set Google Cloud target project
+      command: gcloud config set project ${GOOGLE_PROJECT_ID}
+  export_apk_files_to_env: &export_apk_files_to_env
+    run:
+      name: Configure environment
+      command: |
+        echo 'export APK_PATH=`find . -path "*.apk" ! -path "*unaligned.apk" ! -path "*Test*.apk" -print -quit`' >> $BASH_ENV
+        echo 'export TEST_APK_PATH=`find "." "-path" "*Test*.apk" -print -quit`' >> $BASH_ENV
+  run_on_nexus6P: &run_on_nexus6P
+    run:
+      name: Running Nexus 6P
+      command: gcloud firebase test android run --type instrumentation --app ${APK_PATH} --test ${TEST_APK_PATH} --device model=Nexus6P,version=27,locale=en,orientation=portrait --timeout 30m
+      no_output_timeout: 30m
+  run_on_motog4_plus: &run_on_motog4_plus
+      run:
+        name: Running Moto G4 Plus
+        command: gcloud firebase test android run --type instrumentation --app ${APK_PATH} --test ${TEST_APK_PATH} --device model=athene,version=23,locale=en,orientation=portrait --timeout 30m
+        no_output_timeout: 30m
+
+jobs:
+  build:
+    <<: *android_config
     steps:
       - checkout
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *restore_cache
 #      - run:
 #         name: Chmod permissions #if permission for Gradlew Dependencies fail, use this.
 #         command: sudo chmod +x ./gradlew
       - run:
           name: Download Dependencies
           command: ./gradlew androidDependencies
-      - save_cache:
-          paths:
-            - ~/.gradle
-          key: jars-{{ checksum "build.gradle" }}-{{ checksum  "app/build.gradle" }}
+      - *save_cache
       - run:
           name: Run Tests
           command: ./gradlew lint test
@@ -34,17 +78,16 @@ jobs:
       - store_artifacts:
           path: app/build/outputs/apk/
           destination: /apk/
-      - run:
-          name: Dump Google Cloud Credentials to file
-          command: echo ${GOOGLE_AUTH} > ${HOME}/gcp-key.json
-      - run: gcloud auth activate-service-account --key-file ${HOME}/gcp-key.json
-      - run: gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
-      - run:
-          name: Configure environment
-          command: |
-                  echo 'export APK_PATH=`find . -path "*.apk" ! -path "*unaligned.apk" ! -path "*Test*.apk" -print -quit`' >> $BASH_ENV
-                  echo 'export TEST_APK_PATH=`find "." "-path" "*Test*.apk" -print -quit`' >> $BASH_ENV
-      - run:
-          name: Run UI Tests
-          command: gcloud firebase test android run --type instrumentation --app ${APK_PATH} --test ${TEST_APK_PATH} --device model=Nexus6P,version=27,locale=en,orientation=portrait --timeout 30m
-          no_output_timeout: 30m
+
+      - *gcc_to_file
+      - *gcc_auth
+      - *export_apk_files_to_env
+      - *set_google_cloud_target
+      - *run_on_nexus6P
+      - *run_on_motog4_plus
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
