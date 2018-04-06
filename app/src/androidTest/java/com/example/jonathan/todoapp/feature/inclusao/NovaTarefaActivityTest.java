@@ -12,7 +12,6 @@ import android.support.test.runner.AndroidJUnit4;
 import com.example.jonathan.todoapp.R;
 import com.example.jonathan.todoapp.TarefaModelo;
 import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
-import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -53,13 +52,13 @@ public class NovaTarefaActivityTest {
 
     @Test
     public void aoIniciarActivityComTarefaParaAlteracao_deveExibirDescricaoDaTarefa() {
-        String tarefaParaAlteração = "Tarefa para Alteração";
+        String tarefaParaAlteracao = "Tarefa para Alteração";
 
         Intent intent = new Intent();
         intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
-                new TarefaModelo(tarefaParaAlteração, false));
+                new TarefaModelo(tarefaParaAlteracao, false));
         iniciarActivity(intent);
-        Espresso.onView(ViewMatchers.withText(tarefaParaAlteração))
+        Espresso.onView(ViewMatchers.withText(tarefaParaAlteracao))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 

@@ -1,6 +1,5 @@
 package com.example.jonathan.todoapp.repository.local;
 
-
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.annotation.VisibleForTesting;
@@ -9,7 +8,7 @@ public class DatabaseConcrete {
 
     private static AppDatabase INSTANCE;
 
-    private DatabaseConcrete() {}
+    private DatabaseConcrete() { /* construtor vazio */ }
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
