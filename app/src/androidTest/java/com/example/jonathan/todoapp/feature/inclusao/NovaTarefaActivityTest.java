@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.feature.inclusao;
 
 import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
@@ -9,6 +9,8 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.TarefaModelo;
 import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
 

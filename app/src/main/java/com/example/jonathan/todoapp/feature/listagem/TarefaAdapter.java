@@ -13,14 +13,16 @@ import android.widget.TextView;
 import com.example.jonathan.todoapp.R;
 import com.example.jonathan.todoapp.TarefaModelo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TarefaAdapter
         extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final TarefaCallback tarefaCallback;
-    private List<TarefaModelo> lista = new ArrayList<>();
+    private List<TarefaModelo> lista;
+
+    private static final int VIEW_TYPE_EMPTY_STATE = 10;
+    private static final int VIEW_TYPE_DADOS = 20;
 
     public interface TarefaCallback {
         void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo);
@@ -34,25 +36,40 @@ public class TarefaAdapter
         this.tarefaCallback = callback;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (lista.isEmpty()) {
+            return VIEW_TYPE_EMPTY_STATE;
+        }
+        return VIEW_TYPE_DADOS;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        View view = inflater.inflate(R.layout.item_lista_tarefa, parent, false);
+
+        View view;
+        if (viewType == VIEW_TYPE_DADOS) {
+            view = inflater.inflate(R.layout.item_lista_tarefa, parent, false);
+        } else {
+            view = inflater.inflate(R.layout.item_empty_state, parent, false);
+        }
         return new TarefaViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        TarefaModelo tarefaModelo = lista.get(position);
-        TarefaViewHolder vh = (TarefaViewHolder) holder;
+        if (holder.getItemViewType() == VIEW_TYPE_DADOS) {
+            TarefaModelo tarefaModelo = lista.get(position);
+            TarefaViewHolder vh = (TarefaViewHolder) holder;
 
-        addChangeListenerForCheckBox(vh);
-        adicionarClickNaLinha(vh);
+            addChangeListenerForCheckBox(vh);
+            adicionarClickNaLinha(vh);
 
-        vh.txtDescricao.setText(tarefaModelo.getDescricao());
-        vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
-
+            vh.txtDescricao.setText(tarefaModelo.getDescricao());
+            vh.chkExecutado.setChecked(tarefaModelo.isExecutado());
+        }
     }
 
     private void adicionarClickNaLinha(final TarefaViewHolder vh) {
@@ -67,6 +84,9 @@ public class TarefaAdapter
 
     @Override
     public int getItemCount() {
+        if (lista.isEmpty()) {
+            return 1;
+        }
         return lista.size();
     }
 

@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.feature.listagem;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -14,10 +14,13 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.jonathan.todoapp.customassertions.PaintFlagTextAssertion;
+import com.example.jonathan.todoapp.R;
+import com.example.jonathan.todoapp.customassertions.RecyclerViewItemCountAssertion;
+import com.example.jonathan.todoapp.TarefaModelo;
 import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
 import com.example.jonathan.todoapp.repository.local.TarefaDao;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
-import com.example.jonathan.todoapp.feature.listagem.MainActivity;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
