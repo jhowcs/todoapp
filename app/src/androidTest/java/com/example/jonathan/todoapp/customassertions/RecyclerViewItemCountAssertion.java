@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp;
+package com.example.jonathan.todoapp.customassertions;
 
 import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.ViewAssertion;
