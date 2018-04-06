@@ -1,4 +1,4 @@
-package com.example.jonathan.todoapp.data;
+package com.example.jonathan.todoapp.repository.local;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;

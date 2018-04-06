@@ -14,8 +14,8 @@ import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.runner.AndroidJUnit4;
 
-import com.example.jonathan.todoapp.data.DatabaseConcrete;
-import com.example.jonathan.todoapp.data.TarefaDao;
+import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
+import com.example.jonathan.todoapp.repository.local.TarefaDao;
 import com.example.jonathan.todoapp.feature.inclusao.NovaTarefaActivity;
 import com.example.jonathan.todoapp.feature.listagem.MainActivity;
 
