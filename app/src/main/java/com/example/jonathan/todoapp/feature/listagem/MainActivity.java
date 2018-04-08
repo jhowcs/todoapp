@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
@@ -21,6 +22,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements TarefaAdapter.TarefaCallback {
 
+    private Toolbar toolbar;
     private RecyclerView rvListaTarefa;
     private FloatingActionButton fabNovaTarefa;
 
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        toolbar = findViewById(R.id.toolbar);
         rvListaTarefa = findViewById(R.id.rvListaTarefa);
         fabNovaTarefa = findViewById(R.id.fabNovaTarefa);
 
@@ -51,8 +54,13 @@ public class MainActivity extends AppCompatActivity
         repositorio = new TarefaRepository(DatabaseConcrete
                 .getInstance(MainActivity.this.getApplicationContext()).getTarefaDao());
 
+        inicializaToolbar();
         inicializaLista();
         adicionaEventoDeSwipeNaLista();
+    }
+
+    private void inicializaToolbar() {
+        setSupportActionBar(toolbar);
     }
 
     private void iniciarActivityNovaTarefa(Intent intent, int requestCode) {

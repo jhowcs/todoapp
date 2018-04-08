@@ -16,7 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".feature.inclusao.NovaTarefaActivity" />
+        <activity android:name=".feature.inclusao.NovaTarefaActivity"
+            android:parentActivityName=".feature.listagem.MainActivity"
+            android:label="@string/titulo_nova_tarefa">
+
+            <meta-data android:name="android.support.PARENTY_ACTIVITY"
+                android:value=".feature.listagem.MainActivity"/>
+
+        </activity>
 
     </application>
 

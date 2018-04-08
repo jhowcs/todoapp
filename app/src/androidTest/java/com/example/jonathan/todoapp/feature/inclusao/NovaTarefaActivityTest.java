@@ -24,7 +24,7 @@ public class NovaTarefaActivityTest {
 
     @Rule
     public IntentsTestRule<NovaTarefaActivity> rule
-            = new IntentsTestRule(NovaTarefaActivity.class,
+            = new IntentsTestRule<>(NovaTarefaActivity.class,
             true,
             false);
 

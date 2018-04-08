@@ -3,4 +3,5 @@
     <string name="nome_tarefa">nome da tarefa</string>
     <string name="incluir_tarefa">incluir tarefa</string>
     <string name="mensagem_empty_state">nenhuma tarefa cadastrada</string>
+    <string name="titulo_nova_tarefa">nova tarefa</string>
 </resources>
