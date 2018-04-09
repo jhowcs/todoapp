@@ -2,6 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'checkstyle'
 
 android {
+    signingConfigs {
+        release {
+            Properties properties = new Properties()
+            properties.load(project.rootProject.file('local.properties').newDataInputStream())
+            storeFile file(properties.getProperty('storeFile'))
+            keyAlias properties.getProperty('keyAlias')
+            storePassword properties.getProperty('storePassword')
+            keyPassword properties.getProperty('keyPassword')
+        }
+    }
+
     compileSdkVersion 27
     buildToolsVersion "27.0.3"
     defaultConfig {
@@ -12,14 +23,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         debug {
             testCoverageEnabled true
         }
 
         release {
-            minifyEnabled false
+            debuggable false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 }
@@ -32,13 +47,11 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation "android.arch.persistence.room:runtime:$rootProject.room"
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.room"
-
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$rootProject.espresso"
     androidTestImplementation "com.android.support.test.espresso:espresso-intents:$rootProject.espresso"
     androidTestImplementation "com.android.support.test.espresso:espresso-contrib:$rootProject.espresso"
-
 }
 
 check.dependsOn 'checkstyle'
