@@ -86,8 +86,31 @@ jobs:
       - *run_on_nexus6P
       - *run_on_motog4_plus
 
+  build_release:
+    <<: *android_config
+    steps:
+      - checkout
+      - *restore_cache
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - *save_cache
+      - run:
+          name: Decrypt release key
+          command: openssl aes-256-cbc -d -in distribution/release.keystore-cipher -out distribution/release.keystore -md sha256 -k ${CIPHER_DECRYPT_KEY}
+      - run:
+          name: Gradle build (release)
+          command: ./gradlew -PciBuild=true :app:assembleRelease
+      - store_artifacts:
+          path: app/build/outputs/apk/
+          destination: /apk/
+      - store_artifacts:
+          path: app/build/outputs/mapping/
+          destination: /mapping/
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
+      - build_release
