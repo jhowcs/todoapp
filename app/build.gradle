@@ -9,6 +9,12 @@ android {
             keyAlias System.env.RELEASE_KEY_ALIAS
             keyPassword System.env.RELEASE_KEY_PASSWORD
         }
+        debug {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file("$rootDir/distribution/debug.keystore")
+            storePassword 'android'
+        }
     }
 
     compileSdkVersion 27
