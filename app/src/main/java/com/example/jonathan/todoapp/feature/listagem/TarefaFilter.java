@@ -28,7 +28,8 @@ public class TarefaFilter extends Filter {
             listaFiltrada = listaOriginal;
         } else {
             for (TarefaModelo tarefa : listaOriginal) {
-                if (tarefa.getDescricao().contains(constraint)) {
+                if (tarefa.getDescricao().toLowerCase()
+                        .contains(constraint.toString().toLowerCase())) {
                     listaFiltrada.add(tarefa);
                 }
             }
