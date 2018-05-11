@@ -56,5 +56,78 @@
         <module name="NoLineWrap"/>
 
         <module name="WhitespaceAround"/>
+
+        <module name="DefaultComesLast"/>
+
+        <module name="EmptyStatement"/>
+
+        <module name="EqualsAvoidNull"/>
+
+        <module name="FallThrough">
+            <property name="reliefPattern" value="continue in next case"/>
+        </module>
+
+        <module name="MagicNumber"/>
+
+        <module name="MissingSwitchDefault"/>
+
+        <module name="ModifiedControlVariable">
+            <property name="skipEnhancedForLoopVariable" value="true"/>
+        </module>
+
+        <module name="MultipleStringLiterals"/>
+
+        <module name="MultipleVariableDeclarations"/>
+
+        <module name="NestedForDepth">
+            <property name="max" value="2"/>
+        </module>
+
+        <module name="NestedIfDepth">
+            <property name="max" value="5"/>
+        </module>
+
+        <module name="NestedTryDepth">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="OneStatementPerLine"/>
+
+        <module name="ReturnCount">
+            <property name="max" value="3"/>
+        </module>
+
+        <module name="SimplifyBooleanExpression"/>
+
+        <module name="SimplifyBooleanReturn"/>
+
+        <module name="StringLiteralEquality"/>
+
+        <module name="AvoidStarImport">
+            <property name="excludes" value="org.junit.Assert"/>
+        </module>
+
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10"/>
+        </module>
+
+        <module name="ArrayTypeStyle"/>
+
+        <module name="CommentsIndentation"/>
+
+        <module name="UpperEll"/>
+
+        <module name="MethodParamPad"/>
+
+        <module name="NoWhitespaceAfter"/>
+
+        <module name="NoWhitespaceBefore"/>
+
+        <module name="SingleSpaceSeparator">
+            <property name="validateComments" value="true"/>
+        </module>
+
+        <module name="WhitespaceAfter"/>
+
     </module>
 </module>

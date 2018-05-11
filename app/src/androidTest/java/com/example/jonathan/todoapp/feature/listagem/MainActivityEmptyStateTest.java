@@ -27,6 +27,8 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityEmptyStateTest {
 
+    public static final String TAREFA_1 = "Tarefa 1";
+
     @Rule
     public IntentsTestRule<MainActivity> rule =
             new IntentsTestRule<>(
@@ -58,7 +60,7 @@ public class MainActivityEmptyStateTest {
         // arrange
         Intent intentNovaTarefa = new Intent();
         intentNovaTarefa.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
-                new TarefaModelo("Tarefa 1", false));
+                new TarefaModelo(TAREFA_1, false));
 
         Intents.intending(IntentMatchers.hasComponent(NovaTarefaActivity.class.getName()))
                 .respondWith(new Instrumentation.ActivityResult(Activity.RESULT_OK,
@@ -69,7 +71,7 @@ public class MainActivityEmptyStateTest {
 
         // assert
         Espresso.onView(Matchers.allOf(ViewMatchers.withId(R.id.txtDescricao),
-                ViewMatchers.withText("Tarefa 1")))
+                ViewMatchers.withText(TAREFA_1)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 }
