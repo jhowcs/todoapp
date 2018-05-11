@@ -22,6 +22,7 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class NovaTarefaActivityTest {
 
+    public static final String LITERAL_TAREFA_PARA_ALTERAÇÃO = "Tarefa para Alteração";
     @Rule
     public IntentsTestRule<NovaTarefaActivity> rule
             = new IntentsTestRule<>(NovaTarefaActivity.class,
@@ -52,13 +53,11 @@ public class NovaTarefaActivityTest {
 
     @Test
     public void aoIniciarActivityComTarefaParaAlteracao_deveExibirDescricaoDaTarefa() {
-        String tarefaParaAlteracao = "Tarefa para Alteração";
-
         Intent intent = new Intent();
         intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
-                new TarefaModelo(tarefaParaAlteracao, false));
+                new TarefaModelo(LITERAL_TAREFA_PARA_ALTERAÇÃO, false));
         iniciarActivity(intent);
-        Espresso.onView(ViewMatchers.withText(tarefaParaAlteracao))
+        Espresso.onView(ViewMatchers.withText(LITERAL_TAREFA_PARA_ALTERAÇÃO))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
     }
 
@@ -66,7 +65,7 @@ public class NovaTarefaActivityTest {
     public void aoAlterarUmaTarefa_deveFinalizarActivity() {
         Intent intent = new Intent();
         intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA,
-                new TarefaModelo("Tarefa para Alteração", false));
+                new TarefaModelo(LITERAL_TAREFA_PARA_ALTERAÇÃO, false));
         iniciarActivity(intent);
         Espresso.onView(ViewMatchers.withId(R.id.edtNomeTarefa))
                 .perform(ViewActions.clearText(),
