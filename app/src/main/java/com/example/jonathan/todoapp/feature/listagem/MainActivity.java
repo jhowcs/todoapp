@@ -7,8 +7,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.jonathan.todoapp.R;
@@ -20,7 +23,7 @@ import com.example.jonathan.todoapp.repository.local.DatabaseConcrete;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements TarefaAdapter.TarefaCallback {
+        implements TarefaAdapter.TarefaCallback, SearchView.OnQueryTextListener {
 
     private Toolbar toolbar;
     private RecyclerView rvListaTarefa;
@@ -127,5 +130,26 @@ public class MainActivity extends AppCompatActivity
         intent.putExtra(NovaTarefaActivity.CHAVE_TAREFA, tarefaModelo);
         intent.putExtra(NovaTarefaActivity.CHAVE_POSICAO, posicao);
         iniciarActivityNovaTarefa(intent, RC_ATUALIZA_TAREFA);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.item_menu_activity_main, menu);
+        MenuItem item = menu.findItem(R.id.menu_pesquisar);
+        SearchView searchView = (SearchView) item.getActionView();
+        searchView.setOnQueryTextListener(this);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        adapter.getFilter().filter(query);
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        adapter.getFilter().filter(newText);
+        return false;
     }
 }

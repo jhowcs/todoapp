@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.example.jonathan.todoapp.R;
@@ -16,13 +18,16 @@ import com.example.jonathan.todoapp.TarefaModelo;
 import java.util.List;
 
 public class TarefaAdapter
-        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder>
+        implements Filterable, TarefaFilter.FiltroCallback {
 
     private final TarefaCallback tarefaCallback;
     private List<TarefaModelo> lista;
 
     private static final int VIEW_TYPE_EMPTY_STATE = 10;
     private static final int VIEW_TYPE_DADOS = 20;
+
+    private TarefaFilter filtro;
 
     public interface TarefaCallback {
         void aoMarcarDesmarcarTarefa(TarefaModelo tarefaModelo);
@@ -88,6 +93,20 @@ public class TarefaAdapter
             return 1;
         }
         return lista.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filtro == null) {
+            filtro = new TarefaFilter(lista, this);
+        }
+        return filtro;
+    }
+
+    @Override
+    public void carregarResultados(List<TarefaModelo> lista) {
+        this.lista = lista;
+        notifyDataSetChanged();
     }
 
     private void addChangeListenerForCheckBox(final TarefaViewHolder vh) {
